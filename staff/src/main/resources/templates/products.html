@@ -82,6 +82,21 @@
             display: contents;
         }
 
+        .floating-confirm {
+            position: fixed;
+            right: 0;
+            bottom: 24px;
+            z-index: 1000;
+            transform: translateX(110%);
+            transition: transform 0.3s ease;
+            border-radius: 0.5rem 0 0 0.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .floating-confirm.is-visible {
+            transform: translateX(0);
+        }
+
         @media (max-width: 576px) {
             .product-table {
                 font-size: 0.75rem;
@@ -279,7 +294,6 @@
                                                     data-change="-1">-</button>
                                         </div>
                                         <input type="hidden" name="quantity" th:value="${product.quantity}">
-                                        <button type="submit" class="btn btn-primary btn-sm confirm-stock">ยืนยันการเปลี่ยนแปลง</button>
                                     </form>
                                     <div class="management-group">
                                         <a th:href="@{/products/{id}/edit(id=${product.id})}"
@@ -303,7 +317,14 @@
     </div>
 </div>
 
+<button type="button" id="floating-confirm" class="btn btn-primary floating-confirm">
+    ยืนยันการเปลี่ยนแปลง
+</button>
+
 <script>
+    const changedForms = new Set();
+    const floatingConfirm = document.getElementById('floating-confirm');
+
     document.addEventListener('gesturestart', function (event) {
         event.preventDefault();
     }, { passive: false });
@@ -341,8 +362,27 @@
                 const nextQuantity = Math.max(0, Number(quantityInput.value) + Number(button.dataset.change));
                 quantityInput.value = nextQuantity;
                 renderQuantity(nextQuantity);
+                changedForms.add(form);
+                floatingConfirm.classList.add('is-visible');
             });
         });
+    });
+
+    floatingConfirm.addEventListener('click', async function () {
+        floatingConfirm.disabled = true;
+
+        try {
+            for (const form of changedForms) {
+                await fetch(form.action, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams(new FormData(form))
+                });
+            }
+            window.location.reload();
+        } finally {
+            floatingConfirm.disabled = false;
+        }
     });
 </script>
 
