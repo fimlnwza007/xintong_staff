@@ -27,6 +27,9 @@ public class Product {
     @Column (name = "quantity", nullable = false)
     private int quantity;
 
+    @Column (name = "pieces_per_box", nullable = false)
+    private int piecesPerBox = 1;
+
     public Product() {
     }
 
@@ -76,5 +79,21 @@ public class Product {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public int getPiecesPerBox() {
+        return piecesPerBox;
+    }
+
+    public void setPiecesPerBox(int piecesPerBox) {
+        this.piecesPerBox = piecesPerBox;
+    }
+
+    public int getBoxCount() {
+        return quantity / Math.max(piecesPerBox, 1);
+    }
+
+    public int getLoosePieces() {
+        return quantity % Math.max(piecesPerBox, 1);
     }
 }

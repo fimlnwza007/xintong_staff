@@ -112,7 +112,10 @@
                     <div class="col-5">
                         <input type="text" th:field="*{name}" class="form-control" placeholder="ชื่อสินค้า" required>
                     </div>
-                    <div class="col-3">
+                    <div class="col-2">
+                        <input type="number" th:field="*{piecesPerBox}" class="form-control" min="1" placeholder="ชิ้น/กล่อง" required>
+                    </div>
+                    <div class="col-1">
                         <button type="submit" class="btn btn-success w-100">+ เพิ่ม</button>
                     </div>
                 </form>
@@ -122,6 +125,17 @@
 
     <!-- ส่วนที่ 2: ตารางรายการสินค้า -->
     <div class="card shadow-sm">
+        <div class="card-header bg-white d-flex justify-content-end align-items-center gap-2">
+            <span class="text-muted">เรียงตาม</span>
+            <div class="btn-group btn-group-sm" role="group" aria-label="เรียงรายการสินค้า">
+                <a th:href="@{/products(keyword=${keyword}, sort='id')}"
+                   class="btn"
+                   th:classappend="${sort == 'id'} ? 'btn-primary' : 'btn-outline-primary'">ID</a>
+                <a th:href="@{/products(keyword=${keyword}, sort='name')}"
+                   class="btn"
+                   th:classappend="${sort == 'name'} ? 'btn-primary' : 'btn-outline-primary'">ชื่อ</a>
+            </div>
+        </div>
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0 text-center product-table">
@@ -139,14 +153,15 @@
                             <td class="fw-bold" th:text="${product.code}">PROD001</td>
                             <td class="text-start" th:text="${product.name}">สินค้าตัวอย่าง</td>
                             <td>
-                                <form th:action="@{/products/{id}/quantity(id=${product.id})}" method="post"
-                                      class="d-inline-flex align-items-center gap-1">
-                                    <input type="number" name="quantity" min="0" step="1"
-                                           th:value="${product.quantity}"
-                                                                                     class="form-control form-control-sm quantity-input"
-                                                                                 aria-label="จำนวนคงเหลือ"
-                                         onchange="this.form.submit()" required>
-                                </form>
+                                <span th:if="${product.piecesPerBox > 1}">
+                                    <span th:text="${product.boxCount}">0</span> กล่อง
+                                    <span th:if="${product.loosePieces > 0}">
+                                        <span th:text="${product.loosePieces}">0</span> ชิ้น
+                                    </span>
+                                </span>
+                                <span th:unless="${product.piecesPerBox > 1}">
+                                    <span th:text="${product.quantity}">0</span> ชิ้น
+                                </span>
                             </td>
                             <td>
                                 <div class="d-inline-flex gap-1 quantity-actions">
@@ -162,6 +177,8 @@
                                 </div>
                             </td>
                             <td>
+                                <a th:href="@{/products/{id}/edit(id=${product.id})}"
+                                   class="btn btn-warning btn-sm">แก้ไข</a>
                                 <!-- ปุ่มลบรายการ -->
                                 <form th:action="@{/products/{id}/delete(id=${product.id})}" method="post" 
                                       onsubmit="return confirm('ยืนยันที่จะลบสินค้านี้ใช่หรือไม่?');">

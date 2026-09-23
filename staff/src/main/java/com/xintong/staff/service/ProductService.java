@@ -36,6 +36,35 @@ public class ProductService {
         if (product.getCode() == null || product.getCode().trim().isEmpty()) {
             product.setCode(generateNextCode());
         }
+        if (product.getPiecesPerBox() < 1) {
+            product.setPiecesPerBox(1);
+        }
+        return productRepository.save(product);
+    }
+
+    public Product getProduct(Long id) {
+        return productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("ไม่พบสินค้า ID: " + id));
+    }
+
+    @Transactional
+    public Product updateProduct(Long id, Product updatedProduct) {
+        Product product = getProduct(id);
+        product.setCode(updatedProduct.getCode());
+        product.setName(updatedProduct.getName());
+        product.setDescription(updatedProduct.getDescription());
+        return productRepository.save(product);
+    }
+
+    @Transactional
+    public Product updateStock(Long id, int boxes, int pieces, int piecesPerBox) {
+        if (boxes < 0 || pieces < 0 || piecesPerBox < 1) {
+            throw new IllegalArgumentException("จำนวนสินค้าไม่ถูกต้อง");
+        }
+
+        Product product = getProduct(id);
+        product.setPiecesPerBox(piecesPerBox);
+        product.setQuantity((boxes * piecesPerBox) + pieces);
         return productRepository.save(product);
     }
 
