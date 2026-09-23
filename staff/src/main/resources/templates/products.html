@@ -38,6 +38,45 @@
             white-space: nowrap;
         }
 
+        .product-actions-row td {
+            border-top: 0;
+            padding: 0.35rem 0.5rem 0.75rem;
+            background-color: inherit;
+        }
+
+        .product-info-row td,
+        .product-actions-row td {
+            background-color: #f8f9fa !important;
+        }
+
+        .product-info-row:nth-of-type(4n + 3) td,
+        .product-actions-row:nth-of-type(4n + 4) td {
+            background-color: #e8edf3 !important;
+        }
+
+        .product-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            min-height: 42px;
+        }
+
+        .stock-adjust-group,
+        .management-group {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .product-actions form {
+            margin: 0;
+        }
+
+        .stock-form {
+            display: contents;
+        }
+
         @media (max-width: 576px) {
             .product-table {
                 font-size: 0.75rem;
@@ -57,15 +96,7 @@
             }
 
             .product-table th:nth-child(3) {
-                width: 23%;
-            }
-
-            .product-table th:nth-child(4) {
-                width: 20%;
-            }
-
-            .product-table th:nth-child(5) {
-                width: 15%;
+                width: 30%;
             }
 
             .quantity-input {
@@ -104,6 +135,42 @@
             .product-add-form > div:nth-child(3),
             .product-add-form > div:nth-child(4) {
                 width: 50%;
+            }
+
+            .stock-form {
+                display: contents;
+            }
+
+            .stock-form .confirm-stock {
+                margin: 0;
+            }
+
+            .product-actions {
+                gap: 0.45rem;
+                min-height: 42px;
+            }
+
+            .stock-adjust-group,
+            .management-group {
+                gap: 0.2rem;
+            }
+
+            .product-actions .btn {
+                padding: 0.35rem 0.7rem;
+            }
+
+            .stock-adjust-group .btn {
+                width: 44px !important;
+                height: 40px;
+                min-height: 40px;
+                padding-left: 0;
+                padding-right: 0;
+                font-size: 1.35rem;
+                font-weight: 700;
+            }
+
+            .stock-form .confirm-stock {
+                min-width: 0;
             }
         }
     </style>
@@ -169,50 +236,60 @@
                             <th>รหัสสินค้า</th>
                             <th>ชื่อสินค้า</th>
                             <th>จำนวนคงเหลือ</th>
-                            <th>+/-</th>
-                            <th>จัดการ</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="product : ${products}">
+                        <th:block th:each="product : ${products}">
+                        <tr class="product-info-row">
                             <td class="fw-bold" th:text="${product.code}">PROD001</td>
                             <td class="text-start" th:text="${product.name}">สินค้าตัวอย่าง</td>
                             <td>
-                                <span th:if="${product.piecesPerBox > 1}">
-                                    <span th:text="${product.boxCount}">0</span> <span th:text="${product.packageUnit}">กล่อง</span>
-                                    <span th:if="${product.loosePieces > 0}">
-                                        <span th:text="${product.loosePieces}">0</span> <span th:text="${product.pieceUnit}">ชิ้น</span>
-                                    </span>
+                                  <span th:id="${'stock-display-' + product.id}" class="stock-display"
+                                        th:data-quantity="${product.quantity}"
+                                          th:data-pieces-per-box="${product.piecesPerBox}"
+                                          th:data-package-unit="${product.packageUnit}"
+                                          th:data-piece-unit="${product.pieceUnit}">
+                                        <span th:if="${product.piecesPerBox > 1}">
+                                            <span th:text="${product.boxCount}">0</span> <span th:text="${product.packageUnit}">กล่อง</span>
+                                            <span th:if="${product.loosePieces > 0}">
+                                                <span th:text="${product.loosePieces}">0</span> <span th:text="${product.pieceUnit}">ชิ้น</span>
+                                            </span>
+                                        </span>
+                                        <span th:unless="${product.piecesPerBox > 1}">
+                                            <span th:text="${product.quantity}">0</span> <span th:text="${product.pieceUnit}">ชิ้น</span>
+                                        </span>
                                 </span>
-                                <span th:unless="${product.piecesPerBox > 1}">
-                                    <span th:text="${product.quantity}">0</span> <span th:text="${product.pieceUnit}">ชิ้น</span>
-                                </span>
-                            </td>
-                            <td>
-                                <div class="d-inline-flex gap-1 quantity-actions">
-                                    <!-- ปุ่มเพิ่ม (+1) -->
-                                    <form th:action="@{/products/{id}/increase(id=${product.id})}" method="post">
-                                        <button type="submit" class="btn btn-outline-success btn-sm px-3 fw-bold">+</button>
-                                    </form>
-                                    <!-- ปุ่มลด (-1) -->
-                                    <form th:action="@{/products/{id}/decrease(id=${product.id})}" method="post">
-                                        <button type="submit" class="btn btn-outline-danger btn-sm px-3 fw-bold">-</button>
-                                    </form>
-
-                                </div>
-                            </td>
-                            <td>
-                                <a th:href="@{/products/{id}/edit(id=${product.id})}"
-                                   class="btn btn-warning btn-sm">แก้ไข</a>
-                                <!-- ปุ่มลบรายการ -->
-                                <form th:action="@{/products/{id}/delete(id=${product.id})}" method="post" 
-                                      onsubmit="return confirm('ยืนยันที่จะลบสินค้านี้ใช่หรือไม่?');">
-                                    <button type="submit" class="btn btn-danger btn-sm">ลบ</button>
-                                </form>
                             </td>
                         </tr>
+                        <tr class="product-actions-row">
+                            <td colspan="3">
+                                <div class="product-actions">
+                                    <form th:id="${'stock-form-' + product.id}"
+                                          th:action="@{/products/{id}/quantity(id=${product.id})}" method="post"
+                                          class="stock-form" th:data-display-target="${'stock-display-' + product.id}">
+                                        <div class="stock-adjust-group">
+                                            <button type="button" class="btn btn-outline-success btn-sm stock-adjust"
+                                                    data-change="1">+</button>
+                                            <button type="button" class="btn btn-outline-danger btn-sm stock-adjust"
+                                                    data-change="-1">-</button>
+                                        </div>
+                                        <input type="hidden" name="quantity" th:value="${product.quantity}">
+                                        <button type="submit" class="btn btn-primary btn-sm confirm-stock">ยืนยันการเปลี่ยนแปลง</button>
+                                    </form>
+                                    <div class="management-group">
+                                        <a th:href="@{/products/{id}/edit(id=${product.id})}"
+                                           class="btn btn-warning btn-sm px-3">แก้ไข</a>
+                                        <form th:action="@{/products/{id}/delete(id=${product.id})}" method="post"
+                                              onsubmit="return confirm('ยืนยันที่จะลบสินค้านี้ใช่หรือไม่?');">
+                                            <button type="submit" class="btn btn-danger btn-sm px-3">ลบ</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        </th:block>
                         <tr th:if="${#lists.isEmpty(products)}">
-                            <td colspan="5" class="text-muted py-4">ไม่พบรายการสินค้าในระบบ</td>
+                            <td colspan="3" class="text-muted py-4">ไม่พบรายการสินค้าในระบบ</td>
                         </tr>
                     </tbody>
                 </table>
@@ -220,6 +297,37 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.querySelectorAll('.stock-form').forEach(function (form) {
+        const display = document.getElementById(form.dataset.displayTarget);
+        const quantityInput = form.querySelector('input[name="quantity"]');
+        const piecesPerBox = Number(display.dataset.piecesPerBox) || 1;
+        const packageUnit = display.dataset.packageUnit || 'กล่อง';
+        const pieceUnit = display.dataset.pieceUnit || 'ชิ้น';
+
+        function renderQuantity(quantity) {
+            if (piecesPerBox > 1) {
+                const boxes = Math.floor(quantity / piecesPerBox);
+                const pieces = quantity % piecesPerBox;
+                display.textContent = boxes + ' ' + packageUnit;
+                if (pieces > 0) {
+                    display.textContent += ' ' + pieces + ' ' + pieceUnit;
+                }
+            } else {
+                display.textContent = quantity + ' ' + pieceUnit;
+            }
+        }
+
+        form.querySelectorAll('.stock-adjust').forEach(function (button) {
+            button.addEventListener('click', function () {
+                const nextQuantity = Math.max(0, Number(quantityInput.value) + Number(button.dataset.change));
+                quantityInput.value = nextQuantity;
+                renderQuantity(nextQuantity);
+            });
+        });
+    });
+</script>
 
 </body>
 </html>
