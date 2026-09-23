@@ -26,17 +26,27 @@
                     <label class="form-label">จำนวนคงเหลือ</label>
                     <div class="row g-2">
                         <div class="col-4">
-                            <input type="number" name="boxes" th:value="${product.boxCount}" min="0" step="1" class="form-control" placeholder="กล่อง" required>
-                            <small class="text-muted">กล่อง</small>
+                            <input type="number" name="boxes" th:value="${product.boxCount}" min="0" step="1" class="form-control" th:placeholder="${product.packageUnit}" required>
+                            <small class="text-muted" th:text="${product.packageUnit}">กล่อง</small>
                         </div>
                         <div class="col-4">
-                            <input type="number" name="pieces" th:value="${product.loosePieces}" min="0" step="1" class="form-control" placeholder="ชิ้น" required>
-                            <small class="text-muted">ชิ้น</small>
+                            <input type="number" name="pieces" th:value="${product.loosePieces}" min="0" step="1" class="form-control" th:placeholder="${product.pieceUnit}" required>
+                            <small class="text-muted" th:text="${product.pieceUnit}">ชิ้น</small>
                         </div>
                         <div class="col-4">
                             <input type="number" name="piecesPerBox" th:value="${product.piecesPerBox}" min="1" step="1" class="form-control" required>
-                            <small class="text-muted">ชิ้น/กล่อง</small>
+                            <small class="text-muted">ย่อย/หน่วยใหญ่</small>
                         </div>
+                    </div>
+                </div>
+                <div class="row g-2 mb-3">
+                    <div class="col-6">
+                        <label for="packageUnit" class="form-label">หน่วยใหญ่</label>
+                        <input id="packageUnit" type="text" th:field="*{packageUnit}" class="form-control" placeholder="เช่น แพ็ค, ลัง" required>
+                    </div>
+                    <div class="col-6">
+                        <label for="pieceUnit" class="form-label">หน่วยย่อย</label>
+                        <input id="pieceUnit" type="text" th:field="*{pieceUnit}" class="form-control" placeholder="เช่น ขวด, กระป๋อง" required>
                     </div>
                 </div>
                 <div class="d-flex gap-2">

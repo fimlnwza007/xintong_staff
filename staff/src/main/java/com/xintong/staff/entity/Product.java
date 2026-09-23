@@ -30,6 +30,12 @@ public class Product {
     @Column(name = "pieces_per_box", nullable = false, columnDefinition = "integer default 1")
     private int piecesPerBox = 1;
 
+    @Column(name = "package_unit", nullable = false, length = 50, columnDefinition = "varchar(50) default 'กล่อง'")
+    private String packageUnit = "กล่อง";
+
+    @Column(name = "piece_unit", nullable = false, length = 50, columnDefinition = "varchar(50) default 'ชิ้น'")
+    private String pieceUnit = "ชิ้น";
+
     public Product() {
     }
 
@@ -87,6 +93,22 @@ public class Product {
 
     public void setPiecesPerBox(int piecesPerBox) {
         this.piecesPerBox = piecesPerBox;
+    }
+
+    public String getPackageUnit() {
+        return packageUnit;
+    }
+
+    public void setPackageUnit(String packageUnit) {
+        this.packageUnit = packageUnit;
+    }
+
+    public String getPieceUnit() {
+        return pieceUnit;
+    }
+
+    public void setPieceUnit(String pieceUnit) {
+        this.pieceUnit = pieceUnit;
     }
 
     public int getBoxCount() {

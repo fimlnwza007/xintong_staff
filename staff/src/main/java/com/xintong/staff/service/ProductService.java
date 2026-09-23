@@ -39,7 +39,17 @@ public class ProductService {
         if (product.getPiecesPerBox() < 1) {
             product.setPiecesPerBox(1);
         }
+        normalizeUnits(product);
         return productRepository.save(product);
+    }
+
+    private void normalizeUnits(Product product) {
+        if (product.getPackageUnit() == null || product.getPackageUnit().trim().isEmpty()) {
+            product.setPackageUnit("กล่อง");
+        }
+        if (product.getPieceUnit() == null || product.getPieceUnit().trim().isEmpty()) {
+            product.setPieceUnit("ชิ้น");
+        }
     }
 
     public Product getProduct(Long id) {
@@ -53,6 +63,9 @@ public class ProductService {
         product.setCode(updatedProduct.getCode());
         product.setName(updatedProduct.getName());
         product.setDescription(updatedProduct.getDescription());
+        product.setPackageUnit(updatedProduct.getPackageUnit());
+        product.setPieceUnit(updatedProduct.getPieceUnit());
+        normalizeUnits(product);
         return productRepository.save(product);
     }
 
