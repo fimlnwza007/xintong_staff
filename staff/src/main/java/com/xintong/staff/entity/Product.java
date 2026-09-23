@@ -27,7 +27,7 @@ public class Product {
     @Column (name = "quantity", nullable = false)
     private int quantity;
 
-    @Column (name = "pieces_per_box", nullable = false)
+    @Column(name = "pieces_per_box", nullable = false, columnDefinition = "integer default 1")
     private int piecesPerBox = 1;
 
     public Product() {
