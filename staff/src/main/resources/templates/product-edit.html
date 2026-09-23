@@ -35,7 +35,9 @@
                         </div>
                         <div class="col-4">
                             <input type="number" name="piecesPerBox" th:value="${product.piecesPerBox}" min="1" step="1" class="form-control" required>
-                            <small class="text-muted">ย่อย/หน่วยใหญ่</small>
+                            <small class="text-muted">
+                                <span th:text="${product.pieceUnit}">ชิ้น</span>ต่อ<span th:text="${product.packageUnit}">กล่อง</span>
+                            </small>
                         </div>
                     </div>
                 </div>
