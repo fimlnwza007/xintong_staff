@@ -22,6 +22,63 @@
         .quantity-input {
             -moz-appearance: textfield;
         }
+
+        .product-table {
+            width: 100%;
+            table-layout: fixed;
+        }
+
+        .product-table th,
+        .product-table td {
+            overflow-wrap: anywhere;
+        }
+
+        @media (max-width: 576px) {
+            .product-table {
+                font-size: 0.75rem;
+            }
+
+            .product-table th,
+            .product-table td {
+                padding: 0.5rem 0.15rem;
+            }
+
+            .product-table th:nth-child(1) {
+                width: 19%;
+            }
+
+            .product-table th:nth-child(2) {
+                width: 23%;
+            }
+
+            .product-table th:nth-child(3) {
+                width: 23%;
+            }
+
+            .product-table th:nth-child(4) {
+                width: 20%;
+            }
+
+            .product-table th:nth-child(5) {
+                width: 15%;
+            }
+
+            .quantity-input {
+                width: 48px;
+            }
+
+            .quantity-actions {
+                gap: 0.1rem !important;
+            }
+
+            .quantity-actions .btn {
+                padding: 0.25rem 0.45rem;
+            }
+
+            .product-table .btn-danger {
+                padding: 0.25rem 0.4rem;
+            }
+        }
     </style>
 </head>
 <body class="bg-light">
@@ -65,7 +122,7 @@
     <div class="card shadow-sm">
         <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0 text-center">
+                <table class="table table-hover align-middle mb-0 text-center product-table">
                     <thead class="table-dark">
                         <tr class = " pd-10">
                             <th>รหัสสินค้า</th>
@@ -90,7 +147,7 @@
                                 </form>
                             </td>
                             <td>
-                                <div class="d-inline-flex gap-1">
+                                <div class="d-inline-flex gap-1 quantity-actions">
                                     <!-- ปุ่มเพิ่ม (+1) -->
                                     <form th:action="@{/products/{id}/increase(id=${product.id})}" method="post">
                                         <button type="submit" class="btn btn-outline-success btn-sm px-3 fw-bold">+</button>
