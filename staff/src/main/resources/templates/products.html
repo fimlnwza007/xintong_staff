@@ -2,11 +2,16 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <title>ระบบนับ Stock สินค้า</title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        html,
+        body {
+            touch-action: manipulation;
+        }
+
         .quantity-input {
             width: 90px;
             padding: 0;
@@ -299,6 +304,18 @@
 </div>
 
 <script>
+    document.addEventListener('gesturestart', function (event) {
+        event.preventDefault();
+    }, { passive: false });
+
+    document.addEventListener('gesturechange', function (event) {
+        event.preventDefault();
+    }, { passive: false });
+
+    document.addEventListener('gestureend', function (event) {
+        event.preventDefault();
+    }, { passive: false });
+
     document.querySelectorAll('.stock-form').forEach(function (form) {
         const display = document.getElementById(form.dataset.displayTarget);
         const quantityInput = form.querySelector('input[name="quantity"]');
